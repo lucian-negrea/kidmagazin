@@ -4,29 +4,110 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui" >
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css"></link>
+
+    <style>
+        .loader {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+        }
+    </style>
+
+
+    <script type="text/javascript">
+        $(window).load(function() {
+            $(".loader").fadeOut("5000");
+        })
+    </script>
+
+    <div class="loader" id="loader">
+        <noscript>For full functionality of this page it is necessary to enable JavaScript. Here are the <a href="http://www.enable-javascript.com" target="_blank"> instructions how to enable JavaScript in your web browser</a></noscript>
+    </div>
     <h:head>
         <title>Stoc kidmagazin.ro</title>
+
     </h:head>
-    <h:body>
-        <p:dataTable var="item" value="#{produse.produse}" paginator="true" rows="100">
-            <p:column headerText="Nume">
-                <h:outputText value="#{item.nume}" />
-            </p:column>
-            
-            <p:column headerText="Cod Produs">
-                <h:outputText value="#{item.codProdus}" />
-            </p:column>
-            
-            <p:column headerText="Cantitate">
-                <h:outputText value="#{item.cantitate}" />
-            </p:column>
-            
-            <p:column headerText="In Stoc">
-                <h:outputText value="#{item.inStoc}" />
-            </p:column>
-            
-        </p:dataTable>
+    <h:body id="entirePage">
+        <!--<h:button value="IP: #{produse.ip}"></h:button>-->
+        <div class="tabel" >
+            <h:form style="font-size: 10px" id="form">
+                <p:growl id="msgs" showDetail="true" />
+                <p:dataTable editable="true" scrollable="true" scrollHeight="900" rowIndexVar="rowIndex" emptyMessage="" id="tabel" var="item" value="#{produse.produse}"  style="font-size: 10px" tableStyle="table-layout:auto;width:100%;" rowStyleClass="#{(item.cantitate eq 0 and item.cantitateSite gt 0) ? 'outOfStock' : null} #{(item.cantitate gt 0  and item.cantitateSite eq 0) ? 'inStock' : null} #{(item.cantitate gt 0 and not item.inSite) ? 'notInSite' : null}"  >
+                    <f:facet name="header"><h:outputText value="Stoc kidmagazin.ro" />
+                        <br />
+                        <h:commandLink >
+                            <h:outputText value="( CSV |" style="text-align: right"/>
+                            <p:dataExporter type="csv" target="tabel" fileName="produse" />
+                        </h:commandLink>
+
+                        <h:commandLink >
+                            <h:outputText value=" XML )" style="text-align: right"/>
+                            <p:dataExporter type="xml" target="tabel" fileName="produse" />
+                        </h:commandLink>
+
+                    </f:facet>
+                    
+                    <p:ajax event="rowEdit" listener="#{produse.onRowEdit}" update=":form:msgs" />
+                    <p:ajax event="rowEditCancel" listener="#{produse.onRowCancel}" update=":form:msgs" />
+                    <p:column headerText="#">
+                        <h:outputText value="#{rowIndex+1}" />
+                    </p:column>
+                    <p:column headerText="Furnizor" >
+                        <h:outputText value="#{item.furnizor}" />
+                    </p:column>
+
+                    <p:column headerText="Nume">
+                        <h:outputText value="#{item.nume}" />
+                    </p:column>
+
+                    <p:column headerText="Cod Produs">
+                        <h:outputText value="#{item.codProdus}" />
+                    </p:column>
+
+                    <p:column headerText="Stoc furnizor">
+                        <h:outputText value="#{item.cantitate}" />
+                    </p:column>
+
+                    <p:column headerText="Stoc Site">
+                        <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{item.cantitateSite}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{item.cantitateSite}" /></f:facet>
+                        
+                        </p:cellEditor>
+                    </p:column>
+                    
+                    <p:column headerText="Actualizeaza">
+                        <p:rowEditor />
+                    </p:column>
+                    <f:facet name="footer">
+
+                        #{produse.produse.size() == null ? "0" : produse.produse.size()} produse sunt definite la furnizori.
+                    </f:facet>
+
+                </p:dataTable>
+                <p:blockUI block="tabel" trigger="tabel">
+                    Loading...<br />
+                    <p:graphicImage value="images/page-loader.gif"/>  
+                </p:blockUI>
+
+                <p:commandButton id="longOperation" ajax="true" value="Verifica stoc" actionListener="#{produse.afiseazaProduse}" style="font-size: 10px" update="tabel"/>
+                <p:blockUI block="tabel" trigger="longOperation" >  
+                    <p style="font-size: 10px">Informatiile despre stoc sunt colectate si procesate</p>
+                    <p:graphicImage value="images/page-loader.gif"/>  
+                </p:blockUI>
+            </h:form>
+        </div>
     </h:body>
+
+
 </html>
 

@@ -10,21 +10,20 @@
                     <file>${file.reference.primefaces-5.0.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-            </web-module-libraries>
-            <web-module-additional-libraries>
                 <library dirs="200">
                     <file>${libs.jsf20.classpath}</file>
-                    <path-in-war>/</path-in-war>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${libs.PrimeFaces.classpath}</file>
-                    <path-in-war>/</path-in-war>
+                    <file>${libs.MySQLDriver.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${libs.Primefaces5.0.classpath}</file>
-                    <path-in-war>/</path-in-war>
+                    <file>${file.reference.poi-3.10-FINAL-20140208.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-            </web-module-additional-libraries>
+            </web-module-libraries>
+            <web-module-additional-libraries/>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
