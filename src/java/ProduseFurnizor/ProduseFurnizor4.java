@@ -1,7 +1,6 @@
 package ProduseFurnizor;
 
 import controllers.ProduseController;
-import dbcontrollers.MainController;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -52,6 +51,11 @@ public class ProduseFurnizor4 {
                 p.setFurnizor("eVision");
                 p.setNume(produs[1]);
                 p.setCodProdus(produs[0]);
+                try{
+                    p.setPretFurnizor(Double.parseDouble(produs[5]));
+                }catch(Exception exp){
+                    //exp.printStackTrace();
+                }
                 if(produs[6].contains(inStoc)){
                     p.setCantitate(10);
                 }else{

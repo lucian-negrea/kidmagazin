@@ -12,26 +12,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import javax.transaction.UserTransaction;
 import mbeans.Produs;
+import mbeans.User;
 
 /**
  *
  * @author RO100051
  */
 public class MainController {
+    public final static String SALT = "1qtKzbpvdbRHkdqGGLEfnCrb2fWkvM5FeGwhrsFKRTY4yFQqvyEBnfca";
     private static MainController singleton;
     private static Connection con;
     
@@ -86,5 +79,88 @@ public class MainController {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             return stocSite;
         }
+    }
+    
+    public synchronized HashMap<String,String> getMapProdusPret(){
+        HashMap<String,String> preturiMagazin = new HashMap<>();
+        try {
+            if(!con.isValid(1000)){
+                con = DriverManager.getConnection(db,props);
+            }
+            
+            PreparedStatement pr = con.prepareStatement("select distinct p.reference, s.price from ps_product p inner join ps_product_shop s on(p.id_product=s.id_product)");
+            ResultSet rs = pr.executeQuery();
+            while(rs.next()){
+                String referinta = rs.getString("reference");
+                String pretMagazin = rs.getString("price");
+                preturiMagazin.put(referinta, pretMagazin);
+                //System.out.println("Added " + referinta + "/" + cantitate);
+            }
+            System.out.println("Map has: " + preturiMagazin.size());
+            return preturiMagazin;
+        }catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            return preturiMagazin;
+        }
+    }
+    
+    public boolean actualizeazaStoc(Produs p){
+        try {
+            if(!con.isValid(1000)){
+                con = DriverManager.getConnection(db,props);
+            }
+            PreparedStatement pr = con.prepareStatement("update ps_product p inner join ps_stock_available s on(p.id_product=s.id_product) set s.quantity=? where p.reference=?");
+            pr.setInt(1, p.getCantitateSite());
+            pr.setString(2, p.getCodProdus());
+            System.out.println("Stock updated " + p.getCodProdus() + ":" + p.getCantitateSite());
+            int resultat = pr.executeUpdate();
+            System.out.println( resultat + " produse actualizat(e)");
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+    
+    public boolean actualizeazaPret(Produs p){
+        try {
+            if(!con.isValid(1000)){
+                con = DriverManager.getConnection(db,props);
+            }
+            PreparedStatement pr = con.prepareStatement("update ps_product p inner join ps_product_shop s on(p.id_product=s.id_product) set s.price=? where p.reference=?");
+            pr.setDouble(1, p.getPretMagazin());
+            pr.setString(2, p.getCodProdus());
+            System.out.println("Price updated " + p.getCodProdus() + ":" + p.getPretMagazin());
+            int resultat = pr.executeUpdate();
+            System.out.println( resultat + " produse actualizat(e)");
+            return true;
+        }catch (Exception exp){
+            exp.printStackTrace();
+            return false;
+        }
+    }
+    
+    public User getUserByUsername(String email){
+        User u = new User();
+        try {
+            if(!con.isValid(1000)){
+                con = DriverManager.getConnection(db,props);
+            }
+            PreparedStatement pr = con.prepareStatement("select * from ps_employee where email=?");
+            pr.setString(1, email);
+            ResultSet rs = pr.executeQuery();
+            while(rs.next()){
+                String nume = rs.getString("lastname");
+                String parola = rs.getString("passwd");
+                u.setEmail(email);
+                u.setParola(parola);
+                u.setNume(nume);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return u;
     }
 }

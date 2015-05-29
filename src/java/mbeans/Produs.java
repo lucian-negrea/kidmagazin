@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.RowEditEvent;
 
@@ -22,7 +23,33 @@ import org.primefaces.event.RowEditEvent;
 public class Produs implements Serializable{
     private String nume, codProdus,furnizor;
     private int cantitate, cantitateSite;
-    private ArrayList<Produs> produse;
+    private ArrayList<Produs> produse, produseFiltrate;
+    private double pretFurnizor,pretMagazin;
+    
+
+    public ArrayList<Produs> getProduseFiltrate() {
+        return produseFiltrate;
+    }
+
+    public void setProduseFiltrate(ArrayList<Produs> produseFiltrate) {
+        this.produseFiltrate = produseFiltrate;
+    }
+
+    public double getPretFurnizor() {
+        return pretFurnizor;
+    }
+
+    public void setPretFurnizor(double pretFurnizor) {
+        this.pretFurnizor = pretFurnizor;
+    }
+
+    public double getPretMagazin() {
+        return pretMagazin;
+    }
+
+    public void setPretMagazin(double pretMagazin) {
+        this.pretMagazin = pretMagazin;
+    }
     
     boolean inSite;
 
@@ -51,6 +78,7 @@ public class Produs implements Serializable{
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
         System.out.println("Lista de produse(" + "" + ") a fost construita in: " + duration/1000000);
+        
     }
     
     public Produs() {
@@ -104,19 +132,17 @@ public class Produs implements Serializable{
     public void afiseazaProduse(){
         produse = ProduseController.getInstance().getProduse();
     }
-    
-    public void actualizareProdus(Produs p){
-        System.out.println("Furnizor: " + p.getFurnizor() + " Nume: " + p.getNume() + " Cod: " + p.getCodProdus() + " StocF: " + p.getCantitate() + " StocS: " + p.getCantitateSite());
-    }
-    
-    public String getIp(){
-        return GetIP.GetIp.getIp();
-    }
-    
+        
     public void onRowEdit(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Produs actualizat", ((Produs) event.getObject()).getNume());
+        FacesMessage msg;
+        boolean stocActualizat = dbcontrollers.MainController.getInstance().actualizeazaStoc((Produs) event.getObject());
+        //boolean pretActualizat = dbcontrollers.MainController.getInstance().actualizeazaPret((Produs) event.getObject());
+        if(stocActualizat){
+            msg = new FacesMessage("Produs actualizat", ((Produs) event.getObject()).getNume());
+        }else{
+            msg = new FacesMessage("Actualizare esuata!", ((Produs) event.getObject()).getNume());
+        }
         FacesContext.getCurrentInstance().addMessage(null, msg);
-        actualizareProdus((Produs) event.getObject());
     }
      
     public void onRowCancel(RowEditEvent event) {
@@ -124,4 +150,19 @@ public class Produs implements Serializable{
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
     
+    public void validateStoc(FacesContext fc, UIComponent ui, Object obj){
+        int stoc = (int) obj;
+        if(stoc <= 0){
+            FacesMessage fm = new FacesMessage("Stocul trebuie sa fie mai mare sau egal cu 0");
+            FacesContext.getCurrentInstance().addMessage(null, fm);
+        }
+    }
+    
+    public void validatePret(FacesContext fc, UIComponent ui, Object obj){
+        double pret = (double) obj;
+        if(pret <= 0){
+            FacesMessage fm = new FacesMessage("Pretul trebuie sa fie mai mare sau egal cu 0");
+            FacesContext.getCurrentInstance().addMessage(null, fm);
+        }
+    }
 }

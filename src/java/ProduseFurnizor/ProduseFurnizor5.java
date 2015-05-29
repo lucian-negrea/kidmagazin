@@ -7,7 +7,6 @@
 package ProduseFurnizor;
 
 import controllers.ProduseController;
-import dbcontrollers.MainController;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -47,14 +46,14 @@ public class ProduseFurnizor5 {
                 StringBuffer sb = new StringBuffer(line.replace("\"", ""));
                 StringBuffer sb1 = new StringBuffer(sb.toString().replace(";}", "}"));
                 String[] produs = sb1.toString().split(separator);
-                
-                
-                
+                               
+                System.out.println();
                 Produs p = new Produs(null, null, null, 0, 0,false);
                 p.setFurnizor("Happy baby");
-                p.setNume(produs[22]);
+                p.setNume(produs[9]);
                 p.setCodProdus(produs[0]);
-                p.setCantitate(Integer.parseInt(produs[2]));
+                p.setCantitate(Integer.parseInt(produs[6]));
+                p.setPretMagazin(Double.parseDouble(produs[6]));
                 int cantitateSite = ProduseController.getInstance().getStocSite(p);
                 if(cantitateSite!=99999){
                     p.setCantitateSite(cantitateSite);

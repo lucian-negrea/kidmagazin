@@ -6,6 +6,7 @@
 package controllers;
 
 import ProduseFurnizor.ProduseFurnizor1;
+import ProduseFurnizor.ProduseFurnizor10;
 import ProduseFurnizor.ProduseFurnizor2;
 import ProduseFurnizor.ProduseFurnizor3;
 import ProduseFurnizor.ProduseFurnizor4;
@@ -32,15 +33,17 @@ public class ProduseController {
     private static ProduseController singleton;
     ArrayList<Produs> produseFurnizor = new ArrayList<>();
     private HashMap<String, String> stocSite;
-    private ProduseFurnizor1 produseFurnizor1 = new ProduseFurnizor1();
-    private ProduseFurnizor2 produseFurnizor2 = new ProduseFurnizor2();
-    private ProduseFurnizor3 produseFurnizor3 = new ProduseFurnizor3();
-    private ProduseFurnizor4 produseFurnizor4 = new ProduseFurnizor4();
-    private ProduseFurnizor5 produseFurnizor5 = new ProduseFurnizor5();
-    private ProduseFurnizor6 produseFurnizor6 = new ProduseFurnizor6();
-    private ProduseFurnizor7 produseFurnizor7 = new ProduseFurnizor7();
-    private ProduseFurnizor8 produseFurnizor8 = new ProduseFurnizor8();
-    private ProduseFurnizor9 produseFurnizor9 = new ProduseFurnizor9();
+    private HashMap<String, String> preturiMagazin;
+    private final ProduseFurnizor1 produseFurnizor1 = new ProduseFurnizor1();
+    private final ProduseFurnizor2 produseFurnizor2 = new ProduseFurnizor2();
+    private final ProduseFurnizor3 produseFurnizor3 = new ProduseFurnizor3();
+    private final ProduseFurnizor4 produseFurnizor4 = new ProduseFurnizor4();
+    private final ProduseFurnizor5 produseFurnizor5 = new ProduseFurnizor5();
+    private final ProduseFurnizor6 produseFurnizor6 = new ProduseFurnizor6();
+    private final ProduseFurnizor7 produseFurnizor7 = new ProduseFurnizor7();
+    private final ProduseFurnizor8 produseFurnizor8 = new ProduseFurnizor8();
+    private final ProduseFurnizor9 produseFurnizor9 = new ProduseFurnizor9();
+    private final ProduseFurnizor10 produseFurnizor10 = new ProduseFurnizor10();
 
     private ProduseController() {
     }
@@ -62,9 +65,22 @@ public class ProduseController {
         }
         return NUESTEINSITE;
     }
+    
+    public double getPretMagazin(Produs p) {
+        for (Map.Entry<String, String> key : preturiMagazin.entrySet()) {
+            String cod = key.getKey();
+            String pretMagazin = key.getValue();
+            if (cod.trim().equalsIgnoreCase(p.getCodProdus().trim())) {
+                return Double.parseDouble(pretMagazin);
+            }
+        }
+        return 0;
+    }
+    
 
     public ArrayList<Produs> getProduse() {
         stocSite = MainController.getInstance().getMapProdusCantitate();
+        preturiMagazin = MainController.getInstance().getMapProdusPret();
 
         produseFurnizor.clear();
         System.out.println("Lista produselor a fost stearsa!");
@@ -76,7 +92,7 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor1);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor1.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor1: Added " + listProduseFurnizor1.size() + " produse in " + duration/1000000);
             }
         };
 
@@ -87,7 +103,7 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor2);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor2.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor2: Added " + listProduseFurnizor2.size() + " produse in " + duration/1000000);
             }
         };
 
@@ -98,7 +114,7 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor3);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor3.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor3: Added " + listProduseFurnizor3.size() + " produse in " + duration/1000000);
             }
         };
 
@@ -109,7 +125,7 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor4);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor4.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor4: Added " + listProduseFurnizor4.size() + " produse in " + duration/1000000);
             }
         };
 
@@ -120,7 +136,7 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor5);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor5.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor5: Added " + listProduseFurnizor5.size() + " produse in " + duration/1000000);
             }
         };
 
@@ -131,7 +147,7 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor6);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor6.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor6: Added " + listProduseFurnizor6.size() + " produse in " + duration/1000000);
             }
         };
 
@@ -142,7 +158,7 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor7);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor7.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor7: Added " + listProduseFurnizor7.size() + " produse in " + duration/1000000);
             }
         };
 
@@ -153,7 +169,7 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor8);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor8.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor8: Added " + listProduseFurnizor8.size() + " produse in " + duration/1000000);
             }
         };
 
@@ -164,7 +180,18 @@ public class ProduseController {
                 produseFurnizor.addAll(listProduseFurnizor9);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
-                System.out.println("Added " + listProduseFurnizor9.size() + " produse in " + duration/1000000);
+                System.out.println("Furnizor9: Added " + listProduseFurnizor9.size() + " produse in " + duration/1000000);
+            }
+        };
+        
+        Thread t10 = new Thread() {
+            public void run() {
+                long startTime = System.nanoTime();
+                ArrayList<Produs> listProduseFurnizor10 = produseFurnizor10.getProduse();
+                produseFurnizor.addAll(listProduseFurnizor10);
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime);
+                System.out.println("Furnizor10: Added " + listProduseFurnizor10.size() + " produse in " + duration/1000000);
             }
         };
             t1.start();
@@ -176,13 +203,52 @@ public class ProduseController {
             t7.start();
             t8.start();
             t9.start();
+            t10.start();
             
         try {
-            t1.join();t2.join();t3.join();t4.join();t5.join();t6.join();t7.join();t8.join();t9.join();
+            t1.join();t2.join();t3.join();t4.join();t5.join();t6.join();t7.join();t8.join();t9.join();t10.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(ProduseController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
+        for(Produs p: produseFurnizor){
+            double pretMagazin = getPretMagazin(p);
+            p.setPretMagazin(pretMagazin);
+        }
+        
+        ArrayList<String> codProduseFurnizori = new ArrayList<>();
+        for(Produs p: produseFurnizor){
+            codProduseFurnizori.add(p.getCodProdus().trim());
+        }
+        
+        ArrayList<String> codProduseSite = new ArrayList<>();
+        for(Map.Entry<String, String> key : stocSite.entrySet()){
+            codProduseSite.add(key.getKey());
+        }
+        System.out.println("Site:" + codProduseSite.size() + " produse.");
+        System.out.println("Furnizori:" + codProduseFurnizori.size() + " produse.");
+        
+        for (Map.Entry<String, String> key : stocSite.entrySet()) {
+            
+            String cod = key.getKey();
+            String cantitate = key.getValue();
+            //System.out.println("Checking: " + cod);
+                
+                if (!(codProduseFurnizori.contains(cod.trim()))) {
+                    //System.out.println("Produsul " + cod + "/" + cantitate + " nu se regaseste la furnizori!");
+                    Produs produs = new Produs();
+                    produs.setCantitateSite(Integer.parseInt(cantitate));
+                    produs.setCodProdus(cod);
+                    produs.setFurnizor("Nedefinit");
+                    produs.setNume(cod);
+                    produs.setCantitate(0);
+                    produs.setPretFurnizor(0);
+                    produs.setPretMagazin(getPretMagazin(produs));
+                    produseFurnizor.add(produs);
+                }
+        }
+        
         return produseFurnizor;
     }
+
 }

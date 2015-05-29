@@ -6,10 +6,8 @@
 package ProduseFurnizor;
 
 import controllers.ProduseController;
-import dbcontrollers.MainController;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -64,6 +62,10 @@ public class ProduseFurnizor2 {
                 }else{
                     p.setCantitateSite(0);
                 }
+                
+                String pretFurnizor = produs[8].replace(",", "");
+                p.setPretFurnizor(Double.parseDouble(pretFurnizor));
+                                
                 produse.add(p);
             }
             return produse;

@@ -7,10 +7,7 @@
 package ProduseFurnizor;
 
 import controllers.ProduseController;
-import dbcontrollers.MainController;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import mbeans.Produs;
@@ -42,7 +39,7 @@ public class ProduseFurnizor6 {
             doc = db.parse(url);
             NodeList nl = doc.getElementsByTagName("item");
             System.out.println("Connected to " + url);
-            for(int i=1;i<nl.getLength();i++){
+            for(int i=0;i<nl.getLength();i++){
                 Produs p = new Produs(null, null, null, 0, 0,false);
                 p.setFurnizor("Baby dreams");
                 Element produs = (Element) nl.item(i);
@@ -70,10 +67,34 @@ public class ProduseFurnizor6 {
                 }else{
                     p.setCantitateSite(0);
                 }
+                
+                NodeList nlPretFurnizor = produs.getElementsByTagName("price");
+                Element elPretFurnizor = (Element) nlPretFurnizor.item(0);
+                String pretFurnizorArray [] = elPretFurnizor.getTextContent().split(",");
+                double pretFurnizor = Double.parseDouble(elPretFurnizor.getTextContent().replace(","+pretFurnizorArray[pretFurnizorArray.length-1], ""));
+                double pretPromotional = 0;
+                try{
+                    
+                    NodeList nlPretPromotional = produs.getElementsByTagName("price-promotional");
+                    Element elPretPromotional = (Element) nlPretPromotional.item(0);
+                    String pretPromotionalArray [] = elPretPromotional.getTextContent().split(",");
+                    
+                    pretPromotional = Double.parseDouble(elPretPromotional.getTextContent().replace(","+pretPromotionalArray[pretPromotionalArray.length-1], ""));
+                }catch(Exception exp){
+                    exp.printStackTrace();
+                }
+                
+                if((pretPromotional != 0) && (pretPromotional < pretFurnizor)){
+                    p.setPretFurnizor(pretPromotional);
+                }else{
+                    p.setPretFurnizor(pretFurnizor);                
+                }
+                
                 produse.add(p);
                 
             }
         }catch(Exception exp){
+            exp.printStackTrace();
         }
         return produse;
     }

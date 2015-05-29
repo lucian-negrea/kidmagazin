@@ -7,7 +7,6 @@
 package ProduseFurnizor;
 
 import controllers.ProduseController;
-import dbcontrollers.MainController;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,6 +52,7 @@ public class ProduseFurnizor3 {
                 p.setFurnizor("Importator articole copii");
                 p.setNume(produs[1]);
                 p.setCodProdus(produs[0]);
+                p.setPretFurnizor(Double.parseDouble(produs[3]));
                 
                 if (produs[4].contains(inStoc)) {
                     p.setCantitate(10);

@@ -8,23 +8,13 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/main.css"></link>
 
-    <style>
-        .loader {
-            position: fixed;
-            left: 0px;
-            top: 0px;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
-        }
-    </style>
+
+
 
 
     <script type="text/javascript">
-        $(window).load(function() {
+        $(window).load(function () {
             $(".loader").fadeOut("5000");
         })
     </script>
@@ -36,13 +26,63 @@
         <title>Stoc kidmagazin.ro</title>
 
     </h:head>
-    <h:body id="entirePage">
-        <!--<h:button value="IP: #{produse.ip}"></h:button>-->
+
+
+    <h:body >
+
+        <style>
+            .loader {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+            }
+
+            .loginLoader {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+            }
+
+            tr.outOfStock {
+                background-color: rosybrown; color: #020202;
+            }
+            tr.inStock {
+                background-color: lightgreen; color: #020202;
+            }
+
+            tr.notInSite{
+                background-color: gray; color: #020202;
+
+
+            }
+            .ui-growl-title{
+                font-size: 12px;
+            }
+
+            .ui-growl-message p{
+                font-size: 10px;
+            }
+            .ui-datatable tr.ui-datatable-even:hover, .ui-datatable tr.ui-datatable-odd:hover {
+                background: #78BCFF;
+            }
+        </style>
+
         <div class="tabel" >
             <h:form style="font-size: 10px" id="form">
                 <p:growl id="msgs" showDetail="true" />
-                <p:dataTable editable="true" scrollable="true" scrollHeight="900" rowIndexVar="rowIndex" emptyMessage="" id="tabel" var="item" value="#{produse.produse}"  style="font-size: 10px" tableStyle="table-layout:auto;width:100%;" rowStyleClass="#{(item.cantitate eq 0 and item.cantitateSite gt 0) ? 'outOfStock' : null} #{(item.cantitate gt 0  and item.cantitateSite eq 0) ? 'inStock' : null} #{(item.cantitate gt 0 and not item.inSite) ? 'notInSite' : null}"  >
+                <p:dataTable editable="true" scrollHeight="900" rowIndexVar="rowIndex" emptyMessage="" id="tabel" var="item" value="#{produse.produse}"  style="font-size: 10px;" tableStyle="table-layout:auto;width:100%; " rowStyleClass="#{(item.cantitate eq 0 and item.cantitateSite gt 0) ? 'outOfStock' : null} #{(item.cantitate gt 0  and item.cantitateSite eq 0) ? 'inStock' : null} #{(not item.inSite) ? 'notInSite' : null}"  rows="1000"
+                             paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="1000,2000,5000"  filteredValue="#{produse.produseFiltrate}" widgetVar="tabelProduse">
                     <f:facet name="header"><h:outputText value="Stoc kidmagazin.ro" />
+
                         <br />
                         <h:commandLink >
                             <h:outputText value="( CSV |" style="text-align: right"/>
@@ -55,41 +95,48 @@
                         </h:commandLink>
 
                     </f:facet>
-                    
+
                     <p:ajax event="rowEdit" listener="#{produse.onRowEdit}" update=":form:msgs" />
                     <p:ajax event="rowEditCancel" listener="#{produse.onRowCancel}" update=":form:msgs" />
-                    <p:column headerText="#">
+                    <p:column style="width: auto" headerText="#">
                         <h:outputText value="#{rowIndex+1}" />
                     </p:column>
-                    <p:column headerText="Furnizor" >
+                    <p:column style="width: auto" headerText="Furnizor"  filterBy="#{item.furnizor}" filterMatchMode="contains">
                         <h:outputText value="#{item.furnizor}" />
                     </p:column>
 
-                    <p:column headerText="Nume">
+                    <p:column style="width: 50%;white-space: nowrap;" headerText="Nume" filterBy="#{item.nume}" filterMatchMode="contains">
                         <h:outputText value="#{item.nume}" />
                     </p:column>
 
-                    <p:column headerText="Cod Produs">
+                    <p:column style="width: auto" headerText="Cod Produs" filterBy="#{item.codProdus}" filterMatchMode="contains"> 
                         <h:outputText value="#{item.codProdus}" />
                     </p:column>
 
-                    <p:column headerText="Stoc furnizor">
+                    <p:column style="width: auto;white-space: nowrap;" headerText="Stoc furnizor" filterBy="#{item.cantitate}" filterMatchMode="contains">
                         <h:outputText value="#{item.cantitate}" />
                     </p:column>
 
-                    <p:column headerText="Stoc Site">
+                    <p:column style="width: auto" headerText="Stoc Site" filterBy="#{item.cantitateSite}" filterMatchMode="contains">
                         <p:cellEditor>
-                        <f:facet name="output"><h:outputText value="#{item.cantitateSite}" /></f:facet>
-                        <f:facet name="input"><p:inputText value="#{item.cantitateSite}" /></f:facet>
-                        
+                            <f:facet name="output"><h:outputText value="#{item.cantitateSite}" /></f:facet>
+                            <f:facet name="input"><p:inputText value="#{item.cantitateSite}" validator="#{item.validateStoc}"/></f:facet>
+
                         </p:cellEditor>
                     </p:column>
-                    
-                    <p:column headerText="Actualizeaza">
+
+                    <p:column style="width: auto;white-space: nowrap;" headerText="Pret furnizor">
+                        <h:outputText value="#{item.pretFurnizor}" />
+                    </p:column>
+
+                    <p:column style="width: auto" headerText="Pret Site">
+                            <h:outputText value="#{item.pretMagazin}" />
+                    </p:column>
+
+                    <p:column style="width: auto" headerText="Actualizeaza">
                         <p:rowEditor />
                     </p:column>
                     <f:facet name="footer">
-
                         #{produse.produse.size() == null ? "0" : produse.produse.size()} produse sunt definite la furnizori.
                     </f:facet>
 
@@ -99,15 +146,15 @@
                     <p:graphicImage value="images/page-loader.gif"/>  
                 </p:blockUI>
 
-                <p:commandButton id="longOperation" ajax="true" value="Verifica stoc" actionListener="#{produse.afiseazaProduse}" style="font-size: 10px" update="tabel"/>
+                <p:commandButton id="longOperation" ajax="true" value="Verifica stoc" actionListener="#{produse.afiseazaProduse}" style="font-size: 10px" update="tabel" oncomplete="PF('tabelProduse').clearFilters()"/>
                 <p:blockUI block="tabel" trigger="longOperation" >  
                     <p style="font-size: 10px">Informatiile despre stoc sunt colectate si procesate</p>
-                    <p:graphicImage value="images/page-loader.gif"/>  
+                    <p:graphicImage value="../images/page-loader.gif"/>  
                 </p:blockUI>
             </h:form>
         </div>
+
+
     </h:body>
-
-
-</html>
+  </html>
 

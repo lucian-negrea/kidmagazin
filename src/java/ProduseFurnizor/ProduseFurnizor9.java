@@ -7,21 +7,14 @@
 package ProduseFurnizor;
 
 import controllers.ProduseController;
-import dbcontrollers.MainController;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.stream.FileImageInputStream;
 import mbeans.Produs;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -56,11 +49,22 @@ public class ProduseFurnizor9 {
             while(rowIterator.hasNext()){
                 Row row = rowIterator.next();
                 if(row.getRowNum() != 0){
+                    int stocFurnizor;
                     Produs p = new Produs(null, null, null, 0, 0,false);
                     //System.out.println("Parcurgem rand " + row.getRowNum());
                     String codProdus = row.getCell(0).getStringCellValue().trim();
                     String denumireProdus = row.getCell(1).getStringCellValue().trim();
-                    int stocFurnizor = Integer.parseInt(row.getCell(2).getStringCellValue());
+                    switch (row.getCell(2).getCellType()){
+                        case(Cell.CELL_TYPE_STRING):
+                            stocFurnizor = Integer.parseInt(row.getCell(2).getStringCellValue());
+                            break;
+                        case(Cell.CELL_TYPE_NUMERIC):
+                            stocFurnizor = (int) Math.round(row.getCell(2).getNumericCellValue());
+                            break;
+                        default:
+                            stocFurnizor = 0;
+                    }
+                    
                     //System.out.println(codProdus + "/" + denumireProdus + "/" + stocFurnizor);
                     p.setFurnizor("Hubners");
                     p.setCodProdus(codProdus);
@@ -73,6 +77,9 @@ public class ProduseFurnizor9 {
                 }else{
                     p.setCantitateSite(0);
                 }
+                    
+                    double pretFurnizor = row.getCell(3).getNumericCellValue();
+                    p.setPretFurnizor(pretFurnizor);
                     produse.add(p);
                 }
                 

@@ -41,7 +41,7 @@ public class ProduseFurnizor7 {
             doc = db.parse(url);
             NodeList nl = doc.getElementsByTagName("product");
             System.out.println("Connected to " + url);
-            for(int i=1;i<nl.getLength();i++){
+            for(int i=0;i<nl.getLength();i++){
                 Produs p = new Produs(null, null, null, 0, 0,false);
                 p.setFurnizor("Bebe jucarii");
                 Element produs = (Element) nl.item(i);
@@ -57,11 +57,13 @@ public class ProduseFurnizor7 {
                 NodeList nlCantitate = produs.getElementsByTagName("Stoc");
                 Element elCantitate = (Element) nlCantitate.item(0);
                 try {
-                    CharSequence cs = "IN STOC";
+                    CharSequence cs = "IN";
                     if(elCantitate.getTextContent().contains(cs)){
                         p.setCantitate(10);
                     }
+                    System.out.println(p.getCodProdus() + " : "+elCantitate.getTextContent());
                 } catch (Exception exp) {
+                    System.out.println(p.getCodProdus() + " : "+elCantitate.getTextContent());
                     p.setCantitate(0);
                 }
                 int cantitateSite = ProduseController.getInstance().getStocSite(p);
