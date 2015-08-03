@@ -24,7 +24,7 @@ public class ProduseFurnizor6 {
     private DocumentBuilder db;
     private Document doc;
     private Element root;
-    private String url = "http://www.babydreams.ro/products.xml";
+    private String url = "http://www.kidcity.ro/produse.xml";
     
     public ProduseFurnizor6() {
         
@@ -41,7 +41,7 @@ public class ProduseFurnizor6 {
             System.out.println("Connected to " + url);
             for(int i=0;i<nl.getLength();i++){
                 Produs p = new Produs(null, null, null, 0, 0,false);
-                p.setFurnizor("Baby dreams");
+                p.setFurnizor("kidcity");
                 Element produs = (Element) nl.item(i);
 
                 NodeList nlNume = produs.getElementsByTagName("title");
